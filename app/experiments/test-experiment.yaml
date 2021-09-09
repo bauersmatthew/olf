@@ -1,0 +1,21 @@
+x:
+  a: 1
+  b: 2
+ramp:
+  gasses:
+    CO2:
+      total-flow: 2000
+      odor-flows: [0.5%, 20, 2%, 4%]
+  order:
+    - paraffin
+    #- {shuffle: true, items: ['geosmin', 'pentyl acetate']}
+    - CO2
+  gap-time: 5
+  nblocks: 1
+odors:
+  1: geosmin (1%)
+  2: geosmin (0.1%)
+  7: pentyl acetate (-3)
+  8: pentyl acetate (-4)
+  9: paraffin
+  15: CO2
