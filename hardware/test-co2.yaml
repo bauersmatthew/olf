@@ -1,0 +1,15 @@
+controller: debug
+carrier-mfc: debug1
+flows:
+  vials:
+    mfc: debug2
+    pins:
+      balance: 50
+      vent: 12
+      odor: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  CO2:
+    mfc: debug3
+    pins:
+      balance: =vials
+      vent: default
+      odor: [15]
