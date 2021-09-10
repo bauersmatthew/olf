@@ -889,7 +889,7 @@ class PlanRunner(QObject):
             """Generate a filled PlanState instance."""
             t = time.time()
             step_dt = self.plan.steps[self.step].est_dt()
-            step_remain = self.t0_step+step_dt-t
+            step_remain = max(self.t0_step+step_dt-t, 0.0)
             total_remain = (
                 + sum([s.est_dt() for s in self.plan.steps[self.step+1:]])
                 + step_remain
