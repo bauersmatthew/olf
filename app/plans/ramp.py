@@ -54,13 +54,14 @@ class VialOdor:
         self.carrier_rate = carrier_rate
         self.odor_rate = odor_rate
     
-    def insert_steps(self, plan, gaptime, stimtime):
+    def insert_steps(self, plan, prestimt, poststimt, stimt):
         for o in self.order:
             plan.push(f'Odor: {o}')
             plan += [
-                WaitStep(gaptime),
                 AdjustOdorFlowStep(o, self.carrier_rate, self.odor_rate),
-                OdorStep(o, stimtime)
+                WaitStep(prestimt),
+                OdorStep(o, stimt),
+                WaitStep(poststimt)
             ]
             plan.pop()
 
@@ -85,14 +86,15 @@ class GasOdor:
             key = lambda x: x[1]
         )
     
-    def insert_steps(self, plan, gaptime, stimtime):
+    def insert_steps(self, plan, prestimt, poststimt, stimt):
         for carrier_rate, odor_rate in self.rates:
             pc = round(100*odor_rate/(odor_rate+carrier_rate))
             plan.push(f'Odor: {self.odor} at {pc}%')
             plan += [
-                WaitStep(gaptime),
                 AdjustOdorFlowStep(self.odor, carrier_rate, odor_rate),
-                OdorStep(self.odor, stimtime)
+                WaitStep(prestimt),
+                OdorStep(self.odor, stimt),
+                WaitStep(poststimt)
             ]
 
 @plan('Concentration Ramp', 'ramp')
@@ -102,9 +104,13 @@ def concentration_ramp_plan(odors, cfg_):
         'order': default_order_spec(names),
         'gasses': {},
         'nblocks': 3,
-        'stim-time': 2.0,
-        'gap-time': 45.0,
-        'rest-time': 120.0,
+        'timing': {
+            'stim': 2.0,
+            'begin-movie': 30.0,
+            'pre-stim': 30.0,
+            'post-stim': 30.0,
+            'rest': 120.0
+        },
         'default-flow': {
             'total-flow': 2000.0,
             'odor-flow': '10%'
@@ -112,9 +118,14 @@ def concentration_ramp_plan(odors, cfg_):
     }
     deep_update(cfg, cfg_)
 
-    nb, stimtime, gaptime, resttime = try_typecasting(cfg,
-        ('nblocks', int), ('stim-time', float),
-        ('gap-time', float), ('rest-time', float)
+    nb, timing = try_typecasting(cfg,
+        ('nblocks', int), ('timing', dict)
+    )
+
+    stimt, begint, prestimt, poststimt, restt = try_typecasting(timing,
+        ('stim', float), ('begin-movie', float),
+        ('pre-stim', float), ('post-stim', float),
+        ('rest', float)
     )
 
     default_flow_cfg = dict(cfg['default-flow'])
@@ -141,15 +152,16 @@ def concentration_ramp_plan(odors, cfg_):
             MirrorDownStep(),
             ScopeOnStep()
         ]
+        if i == 0:
+            sl.append(WaitStep(begint))
         for o in order:
-            o.insert_steps(sl, gaptime, stimtime)
+            o.insert_steps(sl, prestimt, poststimt, stimt)
         sl += [
-            WaitStep(gaptime),
             ScopeOffStep(),
             MirrorUpStep()
         ]
         if i+1 < nb:
-            sl.append(WaitStep(resttime))
+            sl.append(WaitStep(restt))
         sl.pop()
     
     return sl
