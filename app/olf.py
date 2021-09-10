@@ -1402,7 +1402,6 @@ class UI(QMainWindow):
         # Signals/slots
         self.ui.button_experiment_config.clicked.connect(self.a_experiment)
         self.ui.button_configure.clicked.connect(self.a_configure)
-        self.ui.combo_plan_select.currentIndexChanged.connect(self.a_set_plan)
         self.ui.button_plan_reload.clicked.connect(self.a_set_plan)
         self.ui.button_flipper.clicked.connect(self.a_flip_mirror)
         self.ui.checkbox_flipper.clicked.connect(self.a_set_mirror)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'olfc2.ui'
+# Form implementation generated from reading ui file 'main.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -329,7 +329,7 @@ class Ui_MainWindow(object):
         self.button_configure.setText(_translate("MainWindow", "Configure"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_setup), _translate("MainWindow", "Setup"))
         self.groupBox_5.setTitle(_translate("MainWindow", "Experiment Plan"))
-        self.button_plan_reload.setText(_translate("MainWindow", "Reload"))
+        self.button_plan_reload.setText(_translate("MainWindow", "Load"))
         self.groupBox_4.setTitle(_translate("MainWindow", "Controls"))
         self.label_4.setText(_translate("MainWindow", "Flipper Mirror"))
         self.button_flipper.setText(_translate("MainWindow", "Toggle"))
